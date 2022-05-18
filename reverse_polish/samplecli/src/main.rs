@@ -33,35 +33,40 @@
 //     println!("Is verbosity specified?: {}", verbose);
 // }
 
-// v2
-use clap::Clap;
 
-// TODO: ビルドエラー解消する
-#[derive(Clap, Debug)]
+// v2 deriveを利用したパターン
 
+// - clapは `3.0.0-rc.9` を入れないとダメらしい
+// 	- 実践Rustプログラミング入門でうまく動かなかったとこメモ https://zenn.dev/esaka/scraps/2ced052b6d5903
+// 	- 更に、cargo.tomlにfeaturesを足す必要がある `clap = { version = "3.0.0-rc.9", features = ["derive"] }`
+// 		- フューチャーフラグとは https://qiita.com/osanshouo/items/43271813b5d62e89d598
 
-// #[clap(
-//     name = ("My RPN program"),
-//     version = "1.0.0",
-//     author = "Masakazu sano",
-//     about = "Super awesome RPN calc!"
-// )]
+use clap::Parser;
 
-// struct Opts {
-//     // Set the level of verbosity
-//     #[clap(short, long)]
-//     verbose: bool,
+#[derive(Parser, Debug)]
+#[clap(
+    name = "My RPN program",
+    version = "1.0.0",
+    author = "Your name",
+    about = "Super awesome sample RPN calculator"
+)]
+struct Opts {
+    /// Sets the level of verbosity
+    #[clap(short, long)]
+    verbose: bool,
 
-//     #[clap(name = "FILE")]
-//     formula_file: Option<String>,
-// }
+    /// Formulas written in RPN
+    #[clap(name = "FILE")]
+    formula_file: Option<String>,
+}
 
-// fn main() {
-//     let opts = Opts::parse();
+fn main() {
 
-//     match opts.formula_file {
-//         Some(file) => println!("File specified: {}", file),
-//         None => println!("No file specified."),
-//     }
-//     println!("Is verbosity specified?: {}", opts.verbose);
-// }
+    let opts = Opts::parse();
+
+    match opts.formula_file {
+        Some(file) => println!("File specified: {}", file),
+        None => println!("No file specified."),
+    }
+    println!("Is verbosity specified?: {}", opts.verbose);
+}
